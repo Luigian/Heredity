@@ -43,6 +43,10 @@ def main():
     if len(sys.argv) != 2:
         sys.exit("Usage: python heredity.py data.csv")
     people = load_data(sys.argv[1])
+    # print(people["Harry"])
+    # print(people["James"])
+    # print(people["Lily"])
+    print(people)
 
     # Keep track of gene and trait probabilities for each person
     probabilities = {
@@ -59,6 +63,8 @@ def main():
         }
         for person in people
     }
+    print(probabilities)
+    sys.exit()
 
     # Loop over all sets of people who might have the trait
     names = set(people)
