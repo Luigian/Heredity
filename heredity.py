@@ -43,10 +43,9 @@ def main():
     if len(sys.argv) != 2:
         sys.exit("Usage: python heredity.py data.csv")
     people = load_data(sys.argv[1])
-    # print(people["Harry"])
-    # print(people["James"])
-    # print(people["Lily"])
+    print("people")
     print(people)
+    print("")
 
     # Keep track of gene and trait probabilities for each person
     probabilities = {
@@ -63,11 +62,19 @@ def main():
         }
         for person in people
     }
+    print("probabilities")
     print(probabilities)
-    sys.exit()
+    print("")
 
     # Loop over all sets of people who might have the trait
     names = set(people)
+    print("names")
+    print(names)
+    print("")
+    print("power names")
+    print(powerset(names))
+    print("")
+
     for have_trait in powerset(names):
 
         # Check if current set of people violates known information
@@ -81,11 +88,19 @@ def main():
 
         # Loop over all sets of people who might have the gene
         for one_gene in powerset(names):
+            # print(powerset(names - one_gene))
             for two_genes in powerset(names - one_gene):
 
                 # Update probabilities with new joint probability
-                p = joint_probability(people, one_gene, two_genes, have_trait)
-                update(probabilities, one_gene, two_genes, have_trait, p)
+                print(f"have_trait: {have_trait}")
+                print(f"one_gene: {one_gene}")
+                print(f"two_genes: {two_genes}")
+                print("")
+
+                # p = joint_probability(people, one_gene, two_genes, have_trait)
+                # update(probabilities, one_gene, two_genes, have_trait, p)
+
+    sys.exit()
 
     # Ensure probabilities sum to 1
     normalize(probabilities)
