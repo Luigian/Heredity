@@ -26,7 +26,7 @@ Next, `PROBS["trait"]` represents the conditional probability that a person exhi
 
 Finally, `PROBS["mutation"]` is the probability that a gene mutates from being the gene in question to not being that gene, and vice versa. If a mother has two versions of the gene, for example, and therefore passes one on to her child, there’s a 1% chance it mutates into not being the target gene anymore. Conversely, if a mother has no versions of the gene, and therefore does not pass it onto her child, there’s a 1% chance it mutates into being the target gene. It’s therefore possible that even if neither parent has any copies of the gene in question, their child might have 1 or even 2 copies of the gene.
 
-Ultimately, the probabilities we calculate are based on these values in PROBS.
+Ultimately, the probabilities we calculate are based on these values in `PROBS`.
 
 Now, in the `main` function, the function first loads data from a file into a dictionary `people`. `people` maps each person’s name to another dictionary containing information about them: including their name, their mother (if one is listed in the data set), their father (if one is listed in the data set), and whether they are observed to have the trait in question (`True` if they do, `False` if they don’t, and `None` if we don’t know).
 
@@ -104,58 +104,34 @@ Therefore, the entire joint probability is just the result of multiplying all of
 
 * The function do not return any value, it just updates the `probabilities` dictionary.
 
-### What did I try, what worked well, what didn’t work well, and what did I notice
+### Ensuring all probability distributions sum to 1
 
-**Convolutional and pooling layers**
+* The `normalize` function updates a dictionary of probabilities such that each probability distribution is normalized (i.e., sums to 1, with relative proportions the same).
 
-Multiple convolutional layers were able to get better results than a single convolutional layer. Also, consecutive convolutional layers (conv-conv-pool) were more effective than alternating with pooling layers (conv-pool-conv).
+* The function accepts a single value: `probabilities`.
 
-My explanation to this is that as convolutional layers turned to crop the images, this actually worked pretty well for this image based data set where the most relevant information for differentiation is at the center of the traffic signs, and not necessarily in the shape of the sign or at the messy background. So, going and cropping in total 6 pixels on each side by using three consecutive 5x5-kernel-convolution layers results in kicking out a 40% of not very relevant pixel information.
+* `probabilities` is a dictionary of people where each person is mapped to a `"gene"` distribution and a `"trait"` distribution.
 
-I tried using 8 and 16 as the number of feature maps generated in each convolution, but 32 was consistently better.
+* For both of the distributions for each person in `probabilities`, this function normalizes that distribution so that the values in the distribution sum to 1, and the relative values in the distribution are the same.
 
-After this, only one 3x3-pooling layer was good enough to reduce the 32 feature maps to an optimal not-to-big-not-to-small size of 6x6, before flattening and passing them as inputs for the neural network. 
+* For example, if `probabilities["Harry"]["trait"][True]` were equal to `0.1` and `probabilities["Harry"]["trait"][False]` were equal to `0.3`, then this function updates the former value to be `0.25` and the latter value to be `0.75`: the numbers now sum to 1, and the latter value is still three times larger than the former value.
 
-**Hidden layers**
-
-One single hidden layer containing a decent amount of units (120) worked far better than multiple hidden layers (10) with significantly more units in the total (400).
-
-Dropout slightly reduced the accuracy by incremented the loss at every training epoch, but it's worthy for avoiding overfitting on the training samples.
+* The function do not return any value, it just updates the `probabilities` dictionary.
 
 ## Resources
-* [Neural Networks - Lecture 5 - CS50's Introduction to Artificial Intelligence with Python 2020][cs50 lecture]
-* [Tensorflow Keras overview][tf]
-* [OpenCV-Python documentation][opencv]
-
-## Installation
-
-**Add the German Traffic Sign Recognition Benchmark (GTSRB) data set:**
-
-* Download the [data set], unzip it, and move the resulting `gtsrb` directory inside the `traffic` directory.
-
-**Install this project’s dependencies (opencv-python for image processing, scikit-learn for ML-related functions, and tensorflow for neural networks):**
-
-* Inside the `traffic` directory: `pip install -r requirements.txt`
+* [Uncertainty - Lecture 2 - CS50's Introduction to Artificial Intelligence with Python 2020][cs50 lecture]
 
 ## Usage
 
-**To create, train, test and optionally save a model:** 
+**To make inferences about a population in a CSV file:** 
 
-* Inside the `traffic` directory: `python traffic.py gtsrb [model.h5]`
-
-**To test a saved model on a selection of each of the 43 traffic signs:** 
-
-* Inside the `traffic/recognition_test` directory: `python recognition.py test ../model.h5`
+* Inside the `heredity` directory: `python heredity.py data/family0.csv`
 
 ## Credits
 [*Luis Sanchez*][linkedin] 2020.
 
 A project from the course [CS50's Introduction to Artificial Intelligence with Python 2020][cs50 ai] from HarvardX.
 
-[German Traffic Sign Recognition Benchmark]: http://benchmark.ini.rub.de/?section=gtsrb&subsection=news
-[cs50 lecture]: https://youtu.be/mFZazxxCKbw?t=3181
-[tf]: https://www.tensorflow.org/guide/keras/sequential_model
-[opencv]: https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_tutorials.html
-[data set]: https://drive.google.com/file/d/1bIiDs6DFGxI69lgX9cgu9ZBiP7SJEeio/view?usp=sharing
+[cs50 lecture]: https://www.youtube.com/watch?v=uQmYZTTqDC0
 [linkedin]: https://www.linkedin.com/in/luis-sanchez-13bb3b189/
 [cs50 ai]: https://cs50.harvard.edu/ai/2020/
