@@ -134,11 +134,11 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone in set `two_genes` has two copies of the gene, and
         * everyone not in `one_gene` or `two_gene` does not have the gene, and
         * everyone in set `have_trait` has the trait, and
-        * everyone not in set` have_trait` does not have the trait.
+        * everyone not in set `have_trait` does not have the trait.
 
     Conditional probabilities of child genes given parents genes:
-    (these values are being calculated inside this function by doing join 
-     probability using the values of the "passing" distribution)
+    (these values are being calculated inside this function using 
+     the values of the "passing" distribution)
     
     mother  | father    |   0       |   1       |   2
     0       |   0       |   0.9801  |   0.0198  |   0.0001
@@ -153,7 +153,7 @@ def joint_probability(people, one_gene, two_genes, have_trait):
     
     """
 
-    # Probability of passing one gene to a child given no. of having copies
+    # Probability of passing one gene to a child given the number of genes the parent has
     passing = {
         0: {
             True: PROBS["mutation"],
@@ -186,7 +186,7 @@ def joint_probability(people, one_gene, two_genes, have_trait):
             from_father = passing[father_genes][True] * passing[mother_genes][False] 
             p *= from_mother + from_father
     
-    # Joinning the probability that everyone in set `two_genes` has two copies of the gene
+    # Joining the probability that everyone in set `two_genes` has two copies of the gene
     for person in two_genes:
         if people[person]["mother"] == None and people[person]["father"] == None:
             p *= PROBS["gene"][2]
@@ -216,7 +216,7 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         person_genes = 1 if person in one_gene else 2 if person in two_genes else 0
         p *= PROBS["trait"][person_genes][True]
           
-    # Joining the probability that everyone not in set` have_trait` does not have the trait
+    # Joining the probability that everyone not in set `have_trait` does not have the trait
     for person in names:
         if person not in have_trait:
             person_genes = 1 if person in one_gene else 2 if person in two_genes else 0
